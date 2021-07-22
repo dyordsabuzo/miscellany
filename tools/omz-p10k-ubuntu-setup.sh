@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 echo "Installing apt libraries"
-sudo apt update && sudo apt install -y zsh git wget
+sudo apt update && sudo apt install -y zsh git wget curl
 
 echo "##############################################"
 echo "Install Oh My Zsh"
