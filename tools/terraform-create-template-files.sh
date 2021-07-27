@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 echo "Create base terraform templates"
-touch main.tf variables.tf providers.tf
+touch main.tf variables.tf providers.tf data.tf
 
 if [ ! -f locals.tf ]
 then
