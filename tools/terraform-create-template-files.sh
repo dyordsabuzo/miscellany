@@ -51,25 +51,25 @@ fi
 echo "Create default terraform variable file"
 mkdir -p tfvars && touch tfvars/main.tfvars
 
-echo "Create terraform prehook"
-mkdir -p hooks
+# echo "Create terraform prehook"
+# mkdir -p hooks
 
-tee hooks/pre-commit <<- PRECOMMIT
-#!/bin/sh -e
+# tee hooks/pre-commit <<- PRECOMMIT
+# #!/bin/sh -e
 
-base_path=`pwd`
-processed_paths=()
+# base_path=`pwd`
+# processed_paths=()
 
-for changed_file in `git diff --name-only`
-do
-  changed_path=`dirname $changed_file`
-  if [[ ! ${processed_paths[*]} =~ $changed_path ]]
-  then
-    cd $base_path/$changed_path && terraform fmt -recursive && \
-      terraform init -backend=false && terraform validate
+# for changed_file in `git diff --name-only`
+# do
+#   changed_path=`dirname $changed_file`
+#   if [[ ! ${processed_paths[*]} =~ $changed_path ]]
+#   then
+#     cd $base_path/$changed_path && terraform fmt -recursive && \
+#       terraform init -backend=false && terraform validate
 
-    processed_paths+=($changed_path)
-  fi
-done
-PRECOMMIT
-chmod +x hooks/pre-commit
+#     processed_paths+=($changed_path)
+#   fi
+# done
+# PRECOMMIT
+# chmod +x hooks/pre-commit
