@@ -7,7 +7,7 @@
 ##########################################################
 set -e
 
-[ -z "$TF_ORGANIZATION" ] && TF_ORGANIZATION="pablosspot"
+organization=${TF_ORGANIZATION:="pablosspot"}
 terraformapiurl=${TF_API_URL:="https://app.terraform.io/api/v2"}
 terraformversion=${TF_VERSION:=1.0.0}
 AGENT_HOMEDIRECTORY=${AGENT_HOMEDIRECTORY:="$HOME"}
@@ -37,7 +37,7 @@ fi
 echo "==========================================="
 echo "Workspace: $workspacename"
 echo "==========================================="
-api_token=$(cat $AGENT_HOMEDIRECTORY/.terraformrc | grep 'token' | sed 's/^.*token = //' | sed 's/"//g')
+api_token=$(cat $AGENT_HOMEDIRECTORY/.terraformrc | grep 'token' | sed 's/^.*token\s*=\s*//' | sed 's/"//g')
 result=$(curl \
   --header "Authorization: Bearer $api_token" \
   --header "Content-Type: application/vnd.api+json" \
@@ -47,7 +47,10 @@ result=$(curl \
 if [ "$result" == "null" ]
 then
   echo "Workspace $workspacename does not exist and will be created."
-  result=$(curl -s -X POST -H "Content-Type: application/vnd.api+json" -H "Authorization: Bearer ${api_token}" \
+  result=$(curl -s -X POST \
+    -H "Cache-Control: no-cache" \
+    -H "Content-Type: application/vnd.api+json" \
+    -H "Authorization: Bearer ${api_token}" \
     -d '{
           "data": {
             "attributes": {
