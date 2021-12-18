@@ -10,6 +10,12 @@ then
   tee providers.tf <<- PROVIDERS
 provider "aws" {
   region = var.region
+
+  default_tags {
+    tags = {
+      created_by = "terraform"
+    }
+  }
 }
 PROVIDERS
 fi
@@ -31,9 +37,6 @@ then
   echo "Create locals template file"
   tee locals.tf <<- LOCALS
 locals {
-  tags = {
-    created_by = "terraform"
-  }
 }
 LOCALS
 fi
