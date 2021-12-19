@@ -37,7 +37,16 @@ fi
 echo "==========================================="
 echo "Workspace: $workspacename"
 echo "==========================================="
-api_token=$(cat $AGENT_HOMEDIRECTORY/.terraformrc | grep 'token' | sed 's/^.*token\s*=\s*//' | sed 's/"//g')
+api_token=""
+os="$(uname -s)"
+case "$os" in
+    Linux*)     api_token=$(cat $AGENT_HOMEDIRECTORY/.terraformrc | grep 'token' | sed 's/^.*token\s*=\s*//' | sed 's/"//g');;
+    Darwin*)    api_token=$(cat $AGENT_HOMEDIRECTORY/.terraformrc | grep 'token' | sed 's/^.*token *= *//' | sed 's/"//g');;
+    *)          api_token=""
+esac
+
+[ -z "$api_token" ] && echo "Terraform Token unknown" && exit 1
+
 result=$(curl \
   --header "Authorization: Bearer $api_token" \
   --header "Content-Type: application/vnd.api+json" \
@@ -50,7 +59,7 @@ then
   result=$(curl -s -X POST \
     -H "Cache-Control: no-cache" \
     -H "Content-Type: application/vnd.api+json" \
-    -H "Authorization: Bearer ${api_token}" \
+    -H "Authorization: Bearer $api_token" \
     -d '{
           "data": {
             "attributes": {
