@@ -7,13 +7,14 @@ touch main.tf data.tf outputs.tf
 if [ ! -f providers.tf ]
 then
   echo "Create providers file"
-  tee providers.tf <<- PROVIDERS
+  cat > providers.tf <<- PROVIDERS
 provider "aws" {
   region = var.region
 
   default_tags {
     tags = {
       created_by = "terraform"
+      workspace = terraform.workspace
     }
   }
 }
@@ -23,7 +24,7 @@ fi
 if [ ! -f variables.tf ]
 then
   echo "Create variables file"
-  tee variables.tf <<- VARIABLES
+  cat > variables.tf <<- VARIABLES
 variable "region" {
   description = "AWS region to create resources in"
   type  = string
@@ -35,7 +36,7 @@ fi
 if [ ! -f locals.tf ]
 then
   echo "Create locals template file"
-  tee locals.tf <<- LOCALS
+  cat > locals.tf <<- LOCALS
 locals {
 }
 LOCALS
@@ -44,9 +45,11 @@ fi
 if [ ! -f backend.tf ]
 then
   echo "Create backend template file"
-  tee backend.tf <<- BACKEND
+  cat > backend.tf <<- BACKEND
 terraform {
-
+  backend "remote" {
+    hostname = "api.terraform.io"
+  }
 }
 BACKEND
 fi
