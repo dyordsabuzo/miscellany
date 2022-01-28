@@ -53,7 +53,9 @@ result=$(curl \
   ${terraformapiurl}/organizations/${organization}/workspaces/${workspacename} | \
   jq -rM '.data.attributes.name')
 
-if [ "$result" == "null" ]
+echo $result
+
+if [[ "${result}" == "null" ]]
 then
   echo "Workspace $workspacename does not exist and will be created."
   result=$(curl -s -X POST \
