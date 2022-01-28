@@ -5,7 +5,7 @@ file_locations=$(find . -type f \( -name "variables.tf" \))
 
 for f in $file_locations
 do
-    input_block=$(awk '/variable/ && gsub(/\"/,"") {printf "  %s = \"\"\n", $2}' $f)
+    input_block=$(awk '/variable/ && gsub(/"/,"") {printf "  %s = \"\"\n", $2}' $f)
 
     config=$(cat <<EOL
 include {
