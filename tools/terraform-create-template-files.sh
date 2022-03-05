@@ -57,6 +57,14 @@ fi
 echo "Create default terraform variable file"
 mkdir -p tfvars && touch tfvars/main.tfvars
 
+echo "Create .gitignore file"
+cat > .gitignore <<- IGNORE
+**/.terraform/**
+**/.terragrunt-cache/**
+IGNORE
+fi
+
+
 # echo "Create terraform prehook"
 # mkdir -p hooks
 
