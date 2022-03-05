@@ -15,15 +15,20 @@ AGENT_HOMEDIRECTORY=${AGENT_HOMEDIRECTORY:="$HOME"}
 [ -z $TF_WORKSPACE ] && echo "TF_WORKSPACE not defined" && exit 1
 [ -z $TF_MODULE_PATH ] || [ ! -d $TF_MODULE_PATH ] && echo "TF_MODULE_PATH not defined or does not exist" && exit 1
 
-echo "==========================================="
-echo "Get workspace to be created"
-echo "==========================================="
-backend=$(cat $TF_MODULE_PATH/backend.tf | \
-  sed 's/\"remote\"//g;s/^ *//g;s/\([a-z_]*\) *=/"\1":/;s/\([a-z_]*\) *{/"\1":{/g;s/\"terraform\"://g;s/\"$/",/g' | \
-  grep -v '^#' | tr -d '\n' | sed 's/,}/}/g')
-prefix=$(echo $backend | jq -rM '.backend.workspaces.prefix')
-host=$(echo $backend | jq -rM '.backend.hostname')
-host=${host:="app.terraform.io"}
+prefix=$TF_WORKSPACE_PREFIX
+
+if [ -z $prefix ]
+then
+  echo "==========================================="
+  echo "Get workspace to be created"
+  echo "==========================================="
+  backend=$(cat $TF_MODULE_PATH/backend.tf | \
+    sed 's/\"remote\"//g;s/^ *//g;s/\([a-z_]*\) *=/"\1":/;s/\([a-z_]*\) *{/"\1":{/g;s/\"terraform\"://g;s/\"$/",/g' | \
+    grep -v '^#' | tr -d '\n' | sed 's/,}/}/g')
+  prefix=$(echo $backend | jq -rM '.backend.workspaces.prefix')
+  host=$(echo $backend | jq -rM '.backend.hostname')
+  host=${host:="app.terraform.io"}
+fi
 
 workspacename=$prefix$TF_WORKSPACE
 if [ -z $prefix ]
