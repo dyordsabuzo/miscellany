@@ -48,7 +48,7 @@ then
   cat > backend.tf <<- BACKEND
 terraform {
   backend "remote" {
-    hostname = "api.terraform.io"
+    hostname = "app.terraform.io"
   }
 }
 BACKEND
