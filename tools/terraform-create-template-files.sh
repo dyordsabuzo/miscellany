@@ -62,7 +62,6 @@ cat > .gitignore <<- IGNORE
 **/.terraform/**
 **/.terragrunt-cache/**
 IGNORE
-fi
 
 
 # echo "Create terraform prehook"
