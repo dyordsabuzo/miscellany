@@ -13,7 +13,11 @@ terraformversion=${TF_VERSION:=1.0.0}
 AGENT_HOMEDIRECTORY=${AGENT_HOMEDIRECTORY:="$HOME"}
 
 [ -z $TF_WORKSPACE ] && echo "TF_WORKSPACE not defined" && exit 1
-[ -z $TF_MODULE_PATH ] || [ ! -d $TF_MODULE_PATH ] && echo "TF_MODULE_PATH not defined or does not exist" && exit 1
+
+if [ -z $TF_WORKSPACE_PREFIX ]
+then
+  [ -z $TF_MODULE_PATH ] || [ ! -d $TF_MODULE_PATH ] && echo "TF_MODULE_PATH not defined or does not exist" && exit 1
+fi
 
 prefix=$TF_WORKSPACE_PREFIX
 
