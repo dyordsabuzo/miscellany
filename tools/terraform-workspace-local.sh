@@ -26,9 +26,10 @@ then
   echo "==========================================="
   echo "Get workspace to be created"
   echo "==========================================="
-  backend=$(cat $TF_MODULE_PATH/backend.tf | \
-    sed 's/\"remote\"//g;s/^ *//g;s/\([a-z_]*\) *=/"\1":/;s/\([a-z_]*\) *{/"\1":{/g;s/\"terraform\"://g;s/\"$/",/g' | \
-    grep -v '^#' | tr -d '\n' | sed 's/,}/}/g')
+  backendjson=$(cat $TF_CONFIG_PATH/backend.tf | \
+    sed 's/\"remote\"//g;s/^ *//g;s/\([a-z_]*\) *=/"\1":/;s/\([a-z_]*\) *{/"\1":{/g;s/:\"\":/:/g;s/}\"/},"/g;s/\"terraform\"://g;s/\"$/",/g' | \
+    grep -v '^#' | tr -d '\n' | sed 's/}\"/},"/g;s/,}/}/g')
+
   prefix=$(echo $backend | jq -rM '.backend.workspaces.prefix')
   host=$(echo $backend | jq -rM '.backend.hostname')
   host=${host:="app.terraform.io"}

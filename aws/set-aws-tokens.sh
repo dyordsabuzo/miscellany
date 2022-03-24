@@ -14,6 +14,7 @@ externalid=$(aws ssm get-parameter --name $EXTERNAL_ID \
 tokens=$(aws sts assume-role \
 --role-arn arn:aws:iam::${awsaccount}:role/$IAM_ROLE \
 --external-id $externalid \
+--duration-seconds 900 \
 --role-session-name assumed-access | \
 jq -rM '.Credentials | [.AccessKeyId,.SecretAccessKey,.SessionToken] | "\(.[0]) \(.[1]) \(.[2])"')
 
