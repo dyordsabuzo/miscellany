@@ -26,7 +26,7 @@ then
   echo "==========================================="
   echo "Get workspace to be created"
   echo "==========================================="
-  backendjson=$(cat $TF_CONFIG_PATH/backend.tf | \
+  backendjson=$(cat $TF_MODULE_PATH/backend.tf | \
     sed 's/\"remote\"//g;s/^ *//g;s/\([a-z_]*\) *=/"\1":/;s/\([a-z_]*\) *{/"\1":{/g;s/:\"\":/:/g;s/}\"/},"/g;s/\"terraform\"://g;s/\"$/",/g' | \
     grep -v '^#' | tr -d '\n' | sed 's/}\"/},"/g;s/,}/}/g')
 
