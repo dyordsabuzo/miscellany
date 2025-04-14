@@ -1,12 +1,16 @@
 #!/usr/bin/env bash
 set -e
 
-echo "Create base terraform templates"
-touch main.tf data.tf outputs.tf
+EMPTY=$1
 
-if [ ! -f providers.tf ]
+
+echo "Create base terraform templates"
+touch main.tf data.tf outputs.tf providers.tf variables.tf backend.tf
+
+
+if [ "$EMPTY" != "empty" ]
 then
-  echo "Create providers file"
+  echo "Update providers file"
   cat > providers.tf <<- PROVIDERS
 provider "aws" {
   region = var.region
@@ -19,11 +23,8 @@ provider "aws" {
   }
 }
 PROVIDERS
-fi
 
-if [ ! -f variables.tf ]
-then
-  echo "Create variables file"
+  echo "Update variables file"
   cat > variables.tf <<- VARIABLES
 variable "region" {
   description = "AWS region to create resources in"
@@ -31,6 +32,19 @@ variable "region" {
   default = "ap-southeast-2"
 }
 VARIABLES
+
+  echo "Update backend template file"
+  cat > backend.tf <<- BACKEND
+terraform {
+  backend "remote" {
+    hostname = "app.terraform.io"
+  }
+}
+BACKEND
+
+
+  echo "Create default terraform variable file"
+  mkdir -p tfvars && touch tfvars/main.tfvars
 fi
 
 if [ ! -f locals.tf ]
@@ -41,21 +55,6 @@ locals {
 }
 LOCALS
 fi
-
-if [ ! -f backend.tf ]
-then
-  echo "Create backend template file"
-  cat > backend.tf <<- BACKEND
-terraform {
-  backend "remote" {
-    hostname = "app.terraform.io"
-  }
-}
-BACKEND
-fi
-
-echo "Create default terraform variable file"
-mkdir -p tfvars && touch tfvars/main.tfvars
 
 echo "Create .gitignore file"
 cat > .gitignore <<- IGNORE
